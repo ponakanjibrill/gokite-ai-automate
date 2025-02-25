@@ -8,7 +8,6 @@ from colorama import init, Fore, Back, Style
 
 init(autoreset=True)
 
-# Global Headers
 GLOBAL_HEADERS = {
     'Accept-Language': 'en-GB,en;q=0.9,en-US;q=0.8,id;q=0.7',
     'Connection': 'keep-alive',
@@ -25,44 +24,126 @@ GLOBAL_HEADERS = {
 }
 
 AI_ENDPOINTS = {
-    "https://deployment-hp4y88pxnqxwlmpxllicjzzn.stag-vxzy.zettablock.com/main": {
-        "agent_id": "deployment_Hp4Y88pxNQXwLMPxlLICJZzN",
-        "name": "Kite AI Assistant",
+    "https://deployment-htmtbvzpc0vboktahrrv1b7f.stag-vxzy.zettablock.com/main": {
+        "agent_id": "deployment_htmTBVZpC0vbOkTAHRrv1b7F",
+        "name": "Professor",
         "questions": [
-            "What is Kite AI?",
-            "How does Kite AI help developers?",
-            "What are the main features of Kite AI?",
-            "Can you explain the Kite AI ecosystem?",
-            "How do I get started with Kite AI?",
-            "What are the benefits of using Kite AI?",
-            "How does Kite AI compare to other AI platforms?",
-            "What kind of problems can Kite AI solve?",
-            "Tell me about Kite AI's architecture",
-            "What are the use cases for Kite AI?"
+            "What is Kite AI's core technology?",
+            "How does Kite AI improve developer productivity?",
+            "What are the key features of Kite AI's platform?",
+            "How does Kite AI handle data security?",
+            "What makes Kite AI different from other AI platforms?",
+            "How does Kite AI integrate with existing systems?",
+            "What programming languages does Kite AI support?",
+            "How does Kite AI's API work?",
+            "What are Kite AI's scalability features?",
+            "How does Kite AI help with code quality?",
+            "What is Kite AI's approach to machine learning?",
+            "How does Kite AI handle version control?",
+            "What are Kite AI's deployment options?",
+            "How does Kite AI assist with debugging?",
+            "What are Kite AI's code completion capabilities?",
+            "How does Kite AI handle multiple projects?",
+            "What is Kite AI's pricing structure?",
+            "How does Kite AI support team collaboration?",
+            "What are Kite AI's documentation features?",
+            "How does Kite AI implement code reviews?",
+            "What is Kite AI's update frequency?",
+            "How does Kite AI handle error detection?",
+            "What are Kite AI's testing capabilities?",
+            "How does Kite AI support microservices?",
+            "What is Kite AI's cloud infrastructure?",
+            "How does Kite AI handle API documentation?",
+            "What are Kite AI's code analysis features?",
+            "How does Kite AI support continuous integration?",
+            "What is Kite AI's approach to code optimization?",
+            "How does Kite AI handle multilingual support?",
+            "What are Kite AI's security protocols?",
+            "How does Kite AI manage user permissions?",
+            "What is Kite AI's backup system?",
+            "How does Kite AI handle code refactoring?",
+            "What are Kite AI's monitoring capabilities?",
+            "How does Kite AI support remote development?",
+            "What is Kite AI's approach to technical debt?",
+            "How does Kite AI handle code dependencies?",
+            "What are Kite AI's performance metrics?",
+            "How does Kite AI support code documentation?",
+            "What is Kite AI's approach to API versioning?",
+            "How does Kite AI handle load balancing?",
+            "What are Kite AI's debugging tools?",
+            "How does Kite AI support code generation?",
+            "What is Kite AI's approach to data validation?",
+            "How does Kite AI handle error logging?",
+            "What are Kite AI's testing frameworks?",
+            "How does Kite AI support code deployment?",
+            "What is Kite AI's approach to code maintenance?",
+            "How does Kite AI handle system integration?"
         ]
     },
-    "https://deployment-nc3y3k7zy6gekszmcsordhu7.stag-vxzy.zettablock.com/main": {
-        "agent_id": "deployment_nC3y3k7zy6gekSZMCSordHu7",
-        "name": "Crypto Price Assistant",
+    "https://deployment-nd28y8lniiyzpvqgftbw2nh1.stag-vxzy.zettablock.com/main": {
+        "agent_id": "deployment_nD28Y8LniIYZpVqgfTBW2nH1",
+        "name": "Crypto Buddy",
         "questions": [
-            "Price of solana",
-            "What's the current price of Bitcoin?",
-            "Show me Ethereum price trends",
-            "Top gainers in the last 24 hours?",
-            "Which coins are trending now?",
-            "Price analysis for DOT",
-            "How is AVAX performing?",
-            "Show me the price of MATIC",
-            "What's the market cap of BNB?",
-            "Price prediction for ADA"
+            "What is Bitcoin's current price?",
+            "Show me Ethereum price",
+            "What's the price of BNB?",
+            "Current Solana price?",
+            "What's AVAX trading at?",
+            "Show me MATIC price",
+            "Current price of DOT?",
+            "What's the XRP price now?",
+            "Show me ATOM price",
+            "What's the current LINK price?",
+            "Show me ADA price",
+            "What's NEAR trading at?",
+            "Current price of FTM?",
+            "What's the ALGO price?",
+            "Show me DOGE price",
+            "What's SHIB trading at?",
+            "Current price of UNI?",
+            "What's the AAVE price?",
+            "Show me LTC price",
+            "What's ETC trading at?",
+            "Show me the price of SAND",
+            "What's MANA's current price?",
+            "Current price of APE?",
+            "What's the GRT price?",
+            "Show me BAT price",
+            "What's ENJ trading at?",
+            "Current price of CHZ?",
+            "What's the CAKE price?",
+            "Show me VET price",
+            "What's ONE trading at?",
+            "Show me the price of GALA",
+            "What's THETA's current price?",
+            "Current price of ICP?",
+            "What's the FIL price?",
+            "Show me EOS price",
+            "What's XTZ trading at?",
+            "Show me the price of ZIL",
+            "What's WAVES current price?",
+            "Current price of KSM?",
+            "What's the DASH price?",
+            "Show me NEO price",
+            "What's XMR trading at?",
+            "Show me the price of IOTA",
+            "What's EGLD's current price?",
+            "Current price of COMP?",
+            "What's the SNX price?",
+            "Show me MKR price",
+            "What's CRV trading at?",
+            "Show me the price of RUNE",
+            "What's 1INCH current price?"
         ]
     },
-    "https://deployment-sofftlsf9z4fya3qchykaanq.stag-vxzy.zettablock.com/main": {
-        "agent_id": "deployment_SoFftlsf9z4fyA3QCHYkaANq",
-        "name": "Transaction Analyzer",
+    "https://deployment-zs6oe0edbuquit8kk0v10djt.stag-vxzy.zettablock.com/main": {
+        "agent_id": "deployment_zs6OE0EdBuQuit8KK0V10dJT",
+        "name": "Sherlock",
         "questions": []
     }
 }
+
+SHERLOCK_ENDPOINT = "https://deployment-zs6oe0edbuquit8kk0v10djt.stag-vxzy.zettablock.com/main"
 
 class KiteAIAutomation:
     def __init__(self, wallet_address: str):
@@ -73,6 +154,8 @@ class KiteAIAutomation:
         self.MAX_DAILY_POINTS = 200
         self.POINTS_PER_INTERACTION = 10
         self.MAX_DAILY_INTERACTIONS = self.MAX_DAILY_POINTS // self.POINTS_PER_INTERACTION
+        self.current_day_transactions = []
+        self.last_transaction_fetch = None
 
     def reset_daily_points(self):
         current_time = datetime.now()
@@ -80,6 +163,8 @@ class KiteAIAutomation:
             print(f"{self.print_timestamp()} {Fore.GREEN}Resetting points for new 24-hour period{Style.RESET_ALL}")
             self.daily_points = 0
             self.next_reset_time = current_time + timedelta(hours=24)
+            self.current_day_transactions = []
+            self.last_transaction_fetch = None
             return True
         return False
 
@@ -97,13 +182,22 @@ class KiteAIAutomation:
     def print_timestamp(self):
         return f"{Fore.YELLOW}[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]{Style.RESET_ALL}"
 
-    def get_recent_transactions(self) -> List[str]:
-        print(f"{self.print_timestamp()} {Fore.BLUE}Fetching recent transactions...{Style.RESET_ALL}")
+    def get_recent_transactions(self, for_sherlock=False) -> List[str]:
+        current_day = datetime.now().date()
+        
+        if self.last_transaction_fetch and self.last_transaction_fetch.date() == current_day and self.current_day_transactions:
+            if for_sherlock:
+                print(f"{self.print_timestamp()} {Fore.BLUE}Using cached transactions for today{Style.RESET_ALL}")
+            return self.current_day_transactions
+            
+        if for_sherlock:
+            print(f"{self.print_timestamp()} {Fore.BLUE}Fetching new transactions for today{Style.RESET_ALL}")
+        
         url = 'https://testnet.kitescan.ai/api/v2/transactions'
         params = {
-            'filter': 'validated'
-        }
-        
+            'filter': 'validated',
+            'age': '1m'
+        }        
         headers = GLOBAL_HEADERS.copy()
         headers['accept'] = '*/*'
         
@@ -111,13 +205,16 @@ class KiteAIAutomation:
             response = requests.get(url, params=params, headers=headers)
             data = response.json()
             hashes = [item['hash'] for item in data.get('items', [])]
-            print(f"{self.print_timestamp()} {Fore.MAGENTA}Successfully fetched {len(hashes)} transactions{Style.RESET_ALL}")
+            self.current_day_transactions = hashes
+            self.last_transaction_fetch = datetime.now()
+            if for_sherlock:
+                print(f"{self.print_timestamp()} {Fore.MAGENTA}Successfully fetched {len(hashes)} transactions{Style.RESET_ALL}")
             return hashes
         except Exception as e:
             print(f"{self.print_timestamp()} {Fore.RED}Error fetching transactions: {e}{Style.RESET_ALL}")
             return []
 
-    def send_ai_query(self, endpoint: str, message: str) -> str:
+    def send_ai_query(self, endpoint: str, message: str) -> tuple:
         headers = GLOBAL_HEADERS.copy()
         headers['Accept'] = 'text/event-stream'
         
@@ -126,11 +223,18 @@ class KiteAIAutomation:
             "stream": True
         }
         
+        ttft = 0
+        total_time = 0
+        
+        print(f"{self.print_timestamp()} {Fore.BLUE}Sending question to AI Agent...{Style.RESET_ALL}")
+        start_time = time.time()
+        first_token_received = False
+        
         try:
             response = requests.post(endpoint, headers=headers, json=data, stream=True)
             accumulated_response = ""
             
-            print(f"{Fore.CYAN}AI Response: {Style.RESET_ALL}", end='', flush=True)
+            print(f"{Fore.CYAN}AI Agent Response: {Style.RESET_ALL}", end='', flush=True)
             for line in response.iter_lines():
                 if line:
                     line = line.decode('utf-8')
@@ -143,18 +247,23 @@ class KiteAIAutomation:
                             json_data = json.loads(json_str)
                             content = json_data.get('choices', [{}])[0].get('delta', {}).get('content', '')
                             if content:
+                                if not first_token_received:
+                                    ttft = (time.time() - start_time) * 1000
+                                    first_token_received = True
+                                
                                 accumulated_response += content
                                 print(Fore.MAGENTA + content + Style.RESET_ALL, end='', flush=True)
                         except json.JSONDecodeError:
                             continue
             
+            total_time = (time.time() - start_time) * 1000
             print() 
-            return accumulated_response.strip()
+            return accumulated_response.strip(), ttft, total_time
         except Exception as e:
             print(f"{self.print_timestamp()} {Fore.RED}Error in AI query: {e}{Style.RESET_ALL}")
-            return ""
+            return "", 0, 0
 
-    def report_usage(self, endpoint: str, message: str, response: str) -> bool:
+    def report_usage(self, endpoint: str, message: str, response: str, ttft: float, total_time: float) -> bool:
         print(f"{self.print_timestamp()} {Fore.BLUE}Reporting usage...{Style.RESET_ALL}")
         url = 'https://quests-usage-dev.prod.zettablock.com/api/report_usage'
         
@@ -165,6 +274,8 @@ class KiteAIAutomation:
             "agent_id": AI_ENDPOINTS[endpoint]["agent_id"],
             "request_text": message,
             "response_text": response,
+            "ttft": ttft,
+            "total_time": total_time,
             "request_metadata": {}
         }
         
@@ -212,13 +323,16 @@ class KiteAIAutomation:
                 print(f"{Fore.MAGENTA}Interaction #{interaction_count}{Style.RESET_ALL}")
                 print(f"{Fore.CYAN}Points: {self.daily_points + self.POINTS_PER_INTERACTION}/{self.MAX_DAILY_POINTS} | Next Reset: {self.next_reset_time.strftime('%Y-%m-%d %H:%M:%S')}{Style.RESET_ALL}")
                 
-                transactions = self.get_recent_transactions()
-                AI_ENDPOINTS["https://deployment-sofftlsf9z4fya3qchykaanq.stag-vxzy.zettablock.com/main"]["questions"] = [
-                    f"What do you think of this transaction? {tx}"
-                    for tx in transactions
-                ]
-
                 endpoint = random.choice(list(AI_ENDPOINTS.keys()))
+                
+                if endpoint == SHERLOCK_ENDPOINT:
+                    transactions = self.get_recent_transactions(for_sherlock=True)
+                    if transactions:
+                        AI_ENDPOINTS[SHERLOCK_ENDPOINT]["questions"] = [
+                            f"What do you think of this transaction? {tx}"
+                            for tx in transactions[:5]
+                        ]
+                
                 question = random.choice(AI_ENDPOINTS[endpoint]["questions"])
                 
                 print(f"\n{Fore.CYAN}Selected AI Assistant: {Fore.WHITE}{AI_ENDPOINTS[endpoint]['name']}")
@@ -228,22 +342,28 @@ class KiteAIAutomation:
                 initial_stats = self.check_stats()
                 initial_interactions = initial_stats.get('total_interactions', 0)
                 
-                response = self.send_ai_query(endpoint, question)
+                response, ttft, total_time = self.send_ai_query(endpoint, question)
                 
-                if self.report_usage(endpoint, question, response):
+                print(f"{self.print_timestamp()} {Fore.BLUE}TTFT: {ttft:.2f}ms | Total Time: {total_time:.2f}ms{Style.RESET_ALL}")
+                
+                if self.report_usage(endpoint, question, response, ttft, total_time):
                     print(f"{self.print_timestamp()} {Fore.GREEN}Usage reported successfully{Style.RESET_ALL}")
-                
-                final_stats = self.check_stats()
-                final_interactions = final_stats.get('total_interactions', 0)
-                
-                if final_interactions > initial_interactions:
-                    print(f"{self.print_timestamp()} {Fore.GREEN}Interaction successfully recorded!{Style.RESET_ALL}")
-                    self.daily_points += self.POINTS_PER_INTERACTION
-                    self.print_stats(final_stats)
+                    
+                    time.sleep(2)
+                    
+                    final_stats = self.check_stats()
+                    final_interactions = final_stats.get('total_interactions', 0)
+                    
+                    if final_interactions > initial_interactions:
+                        print(f"{self.print_timestamp()} {Fore.GREEN}Interaction successfully recorded!{Style.RESET_ALL}")
+                        self.daily_points += self.POINTS_PER_INTERACTION
+                        self.print_stats(final_stats)
+                    else:
+                        print(f"{self.print_timestamp()} {Fore.RED}Warning: Interaction may not have been recorded{Style.RESET_ALL}")
                 else:
-                    print(f"{self.print_timestamp()} {Fore.RED}Warning: Interaction may not have been recorded{Style.RESET_ALL}")
+                    print(f"{self.print_timestamp()} {Fore.RED}Failed to report usage{Style.RESET_ALL}")
                 
-                delay = random.uniform(1, 3)
+                delay = random.uniform(60, 120)
                 print(f"\n{self.print_timestamp()} {Fore.YELLOW}Waiting {delay:.1f} seconds before next query...{Style.RESET_ALL}")
                 time.sleep(delay)
 
@@ -261,7 +381,7 @@ def main():
     """
     print(Fore.CYAN + print_banner + Style.RESET_ALL)
     
-    wallet_address = input(f"{Fore.YELLOW}Register first here: {Fore.GREEN}https://testnet.gokite.ai?r=cmuST6sG{Fore.YELLOW} and Clear Tasks!\nNow, input your registered Wallet Address: {Style.RESET_ALL}")
+    wallet_address = input(f"{Fore.YELLOW}Register first here: {Fore.GREEN}https://testnet.gokite.ai?r=cmuST6sG{Fore.YELLOW} and Complete Tasks!\n\nNow, input your registered Wallet Address: {Style.RESET_ALL}")
     
     automation = KiteAIAutomation(wallet_address)
     automation.run()
