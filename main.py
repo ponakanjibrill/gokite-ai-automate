@@ -226,7 +226,7 @@ class KiteAIAutomation:
         ttft = 0
         total_time = 0
         
-        print(f"{self.print_timestamp()} {Fore.BLUE}Sending question to AI Agent...{Style.RESET_ALL}")
+        print(f"{self.print_timestamp()} {Fore.BLUE}Sending question to AI Agent: {Fore.MAGENTA}{message}{Style.RESET_ALL}\n")
         start_time = time.time()
         first_token_received = False
         
@@ -318,12 +318,12 @@ class KiteAIAutomation:
                 self.reset_daily_points()
                 self.should_wait_for_next_reset()
                 
+                endpoint = random.choice(list(AI_ENDPOINTS.keys()))
+                
                 interaction_count += 1
                 print(f"\n{Fore.CYAN}{'='*50}{Style.RESET_ALL}")
                 print(f"{Fore.MAGENTA}Interaction #{interaction_count}{Style.RESET_ALL}")
                 print(f"{Fore.CYAN}Points: {self.daily_points + self.POINTS_PER_INTERACTION}/{self.MAX_DAILY_POINTS} | Next Reset: {self.next_reset_time.strftime('%Y-%m-%d %H:%M:%S')}{Style.RESET_ALL}")
-                
-                endpoint = random.choice(list(AI_ENDPOINTS.keys()))
                 
                 if endpoint == SHERLOCK_ENDPOINT:
                     transactions = self.get_recent_transactions(for_sherlock=True)
@@ -332,6 +332,10 @@ class KiteAIAutomation:
                             f"What do you think of this transaction? {tx}"
                             for tx in transactions[:5]
                         ]
+                
+                if not AI_ENDPOINTS[endpoint]["questions"]:
+                    print(f"{self.print_timestamp()} {Fore.YELLOW}No questions available for {AI_ENDPOINTS[endpoint]['name']}, skipping...{Style.RESET_ALL}")
+                    continue
                 
                 question = random.choice(AI_ENDPOINTS[endpoint]["questions"])
                 
@@ -381,7 +385,7 @@ def main():
     """
     print(Fore.CYAN + print_banner + Style.RESET_ALL)
     
-    wallet_address = input(f"{Fore.YELLOW}Register first here: {Fore.GREEN}https://testnet.gokite.ai?r=cmuST6sG{Fore.YELLOW} and Complete Tasks!\n\nNow, input your registered Wallet Address: {Style.RESET_ALL}")
+    wallet_address = input(f"{Fore.YELLOW}Register first, here: {Fore.GREEN}https://testnet.gokite.ai?r=cmuST6sG{Fore.YELLOW} and Complete Tasks!\n\nNow, input your registered Wallet Address: {Style.RESET_ALL}")
     
     automation = KiteAIAutomation(wallet_address)
     automation.run()
