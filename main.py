@@ -80,8 +80,8 @@ AI_ENDPOINTS = {
             "How does Kite AI handle system integration?"
         ]
     },
-    "https://deployment-nd28y8lniiyzpvqgftbw2nh1.stag-vxzy.zettablock.com/main": {
-        "agent_id": "deployment_nD28Y8LniIYZpVqgfTBW2nH1",
+    "https://deployment-nfkj10q1reqxkm4crtrlzmt9.stag-vxzy.zettablock.com/main": {
+        "agent_id": "deployment_nfkj10Q1ReqxkM4crtrlZMt9",
         "name": "Crypto Buddy",
         "questions": [
             "What is Bitcoin's current price?",
