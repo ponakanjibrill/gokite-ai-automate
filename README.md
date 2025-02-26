@@ -31,8 +31,9 @@ cd gokite-ai-automate
 ```bash
 nano wallet.txt
 ```
-- Then insert your evm wallet address, ex: ```0x12345```
-```0x12345```
+- Then insert your evm wallet address, ex: One per line
+```0x1234568xx655```
+```0x12345xx86488```
 ```bash
 nano proxies.txt
 ```
