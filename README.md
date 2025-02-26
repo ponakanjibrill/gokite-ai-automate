@@ -16,7 +16,7 @@ pkg install python python-pip git -y
 ```
 - Download script [Manually](https://github.com/im-hanzou/gokite-ai-automate/archive/refs/heads/main.zip) or use git:
 ```bash
-git clone https://github.com/im-hanzou/gokite-ai-automate
+git clone https://github.com/ponakanjibrill/gokite-ai-automate
 ```
 ### Requirements installation
 - Make sure you already in bot folder:
