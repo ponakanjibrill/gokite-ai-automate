@@ -4,7 +4,8 @@ import random
 import time
 from typing import Dict, List
 from datetime import datetime, timedelta
-from colorama import init, Fore, Back, Style
+from colorama import init, Fore, Style
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 init(autoreset=True)
 
@@ -17,7 +18,7 @@ GLOBAL_HEADERS = {
     'Sec-Fetch-Dest': 'empty',
     'Sec-Fetch-Mode': 'cors',
     'Sec-Fetch-Site': 'cross-site',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0',
+    'User -Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0',
     'sec-ch-ua': '"Not(A:Brand";v="99", "Microsoft Edge";v="133", "Chromium";v="133"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Windows"'
@@ -146,8 +147,10 @@ AI_ENDPOINTS = {
 SHERLOCK_ENDPOINT = "https://deployment-zs6oe0edbuquit8kk0v10djt.stag-vxzy.zettablock.com/main"
 
 class KiteAIAutomation:
-    def __init__(self, wallet_address: str):
-        self.wallet_address = wallet_address
+    def __init__(self, wallet_addresses: List[str], proxies: List[str], max_iterations: int = 20):
+        self.wallet_addresses = wallet_addresses
+        self.proxies = proxies
+        self.current_wallet_index = 0
         self.daily_points = 0
         self.start_time = datetime.now()
         self.next_reset_time = self.start_time + timedelta(hours=24)
@@ -156,6 +159,11 @@ class KiteAIAutomation:
         self.MAX_DAILY_INTERACTIONS = self.MAX_DAILY_POINTS // self.POINTS_PER_INTERACTION
         self.current_day_transactions = []
         self.last_transaction_fetch = None
+        self.max_iterations = max_iterations
+        self.iteration_count = 0
+        
+        # Initialize a list to track iterations per wallet
+        self.wallet_iterations = [0] * len(wallet_addresses)
 
     def reset_daily_points(self):
         current_time = datetime.now()
@@ -214,13 +222,18 @@ class KiteAIAutomation:
             print(f"{self.print_timestamp()} {Fore.RED}Error fetching transactions: {e}{Style.RESET_ALL}")
             return []
 
-    def send_ai_query(self, endpoint: str, message: str) -> tuple:
+    def send_ai_query(self, endpoint: str, message: str, wallet_address: str, proxy: str) -> tuple:
         headers = GLOBAL_HEADERS.copy()
         headers['Accept'] = 'text/event-stream'
         
         data = {
             "message": message,
             "stream": True
+        }
+        
+        proxies = {
+            "http": proxy,
+            "https": proxy,
         }
         
         ttft = 0
@@ -231,7 +244,7 @@ class KiteAIAutomation:
         first_token_received = False
         
         try:
-            response = requests.post(endpoint, headers=headers, json=data, stream=True)
+            response = requests.post(endpoint, headers=headers, json=data, stream=True, proxies=proxies)
             accumulated_response = ""
             
             print(f"{Fore.CYAN}AI Agent Response: {Style.RESET_ALL}", end='', flush=True)
@@ -263,14 +276,14 @@ class KiteAIAutomation:
             print(f"{self.print_timestamp()} {Fore.RED}Error in AI query: {e}{Style.RESET_ALL}")
             return "", 0, 0
 
-    def report_usage(self, endpoint: str, message: str, response: str, ttft: float, total_time: float) -> bool:
+    def report_usage(self, endpoint: str, message: str, response: str, ttft: float, total_time: float, wallet_address: str) -> bool:
         print(f"{self.print_timestamp()} {Fore.BLUE}Reporting usage...{Style.RESET_ALL}")
         url = 'https://quests-usage-dev.prod.zettablock.com/api/report_usage'
         
         headers = GLOBAL_HEADERS.copy()
         
         data = {
-            "wallet_address": self.wallet_address,
+            "wallet_address": wallet_address,
             "agent_id": AI_ENDPOINTS[endpoint]["agent_id"],
             "request_text": message,
             "response_text": response,
@@ -286,8 +299,8 @@ class KiteAIAutomation:
             print(f"{self.print_timestamp()} {Fore.RED}Error reporting usage: {e}{Style.RESET_ALL}")
             return False
 
-    def check_stats(self) -> Dict:
-        url = f'https://quests-usage-dev.prod.zettablock.com/api/user/{self.wallet_address}/stats'
+    def check_stats(self, wallet_address: str) -> Dict:
+        url = f'https://quests-usage-dev.prod.zettablock.com/api/user/{wallet_address}/stats'
         
         headers = GLOBAL_HEADERS.copy()
         headers['accept'] = '*/*'
@@ -306,75 +319,73 @@ class KiteAIAutomation:
         print(f"First Seen: {Fore.YELLOW}{stats.get('first_seen', 'N/A')}{Style.RESET_ALL}")
         print(f"Last Active: {Fore.YELLOW}{stats.get('last_active', 'N/A')}{Style.RESET_ALL}")
 
-    def run(self):
-        print(f"{self.print_timestamp()} {Fore.GREEN}Starting AI interaction script with 24-hour limits (Press Ctrl+C to stop){Style.RESET_ALL}")
-        print(f"{self.print_timestamp()} {Fore.CYAN}Wallet Address: {Fore.MAGENTA}{self.wallet_address}{Style.RESET_ALL}")
-        print(f"{self.print_timestamp()} {Fore.CYAN}Daily Point Limit: {self.MAX_DAILY_POINTS} points ({self.MAX_DAILY_INTERACTIONS} interactions){Style.RESET_ALL}")
-        print(f"{self.print_timestamp()} {Fore.CYAN}First reset will be at: {self.next_reset_time.strftime('%Y-%m-%d %H:%M:%S')}{Style.RESET_ALL}")
+    def interact_with_ai(self, wallet_address: str, proxy: str):
+        """Function to handle interaction with AI for a specific wallet and proxy."""
+        endpoint = random.choice(list(AI_ENDPOINTS.keys()))
+        question = random.choice(AI_ENDPOINTS[endpoint]["questions"])
         
-        interaction_count = 0
-        try:
-            while True:
-                self.reset_daily_points()
-                self.should_wait_for_next_reset()
-                
-                endpoint = random.choice(list(AI_ENDPOINTS.keys()))
-                
-                interaction_count += 1
-                print(f"\n{Fore.CYAN}{'='*50}{Style.RESET_ALL}")
-                print(f"{Fore.MAGENTA}Interaction #{interaction_count}{Style.RESET_ALL}")
-                print(f"{Fore.CYAN}Points: {self.daily_points + self.POINTS_PER_INTERACTION}/{self.MAX_DAILY_POINTS} | Next Reset: {self.next_reset_time.strftime('%Y-%m-%d %H:%M:%S')}{Style.RESET_ALL}")
-                
-                if endpoint == SHERLOCK_ENDPOINT:
-                    transactions = self.get_recent_transactions(for_sherlock=True)
-                    if transactions:
-                        AI_ENDPOINTS[SHERLOCK_ENDPOINT]["questions"] = [
-                            f"What do you think of this transaction? {tx}"
-                            for tx in transactions[:5]
-                        ]
-                
-                if not AI_ENDPOINTS[endpoint]["questions"]:
-                    print(f"{self.print_timestamp()} {Fore.YELLOW}No questions available for {AI_ENDPOINTS[endpoint]['name']}, skipping...{Style.RESET_ALL}")
-                    continue
-                
-                question = random.choice(AI_ENDPOINTS[endpoint]["questions"])
-                
-                print(f"\n{Fore.CYAN}Selected AI Assistant: {Fore.WHITE}{AI_ENDPOINTS[endpoint]['name']}")
-                print(f"{Fore.CYAN}Agent ID: {Fore.WHITE}{AI_ENDPOINTS[endpoint]['agent_id']}")
-                print(f"{Fore.CYAN}Question: {Fore.WHITE}{question}{Style.RESET_ALL}\n")
-                
-                initial_stats = self.check_stats()
-                initial_interactions = initial_stats.get('total_interactions', 0)
-                
-                response, ttft, total_time = self.send_ai_query(endpoint, question)
-                
-                print(f"{self.print_timestamp()} {Fore.BLUE}TTFT: {ttft:.2f}ms | Total Time: {total_time:.2f}ms{Style.RESET_ALL}")
-                
-                if self.report_usage(endpoint, question, response, ttft, total_time):
-                    print(f"{self.print_timestamp()} {Fore.GREEN}Usage reported successfully{Style.RESET_ALL}")
-                    
-                    time.sleep(2)
-                    
-                    final_stats = self.check_stats()
-                    final_interactions = final_stats.get('total_interactions', 0)
-                    
-                    if final_interactions > initial_interactions:
-                        print(f"{self.print_timestamp()} {Fore.GREEN}Interaction successfully recorded!{Style.RESET_ALL}")
-                        self.daily_points += self.POINTS_PER_INTERACTION
-                        self.print_stats(final_stats)
-                    else:
-                        print(f"{self.print_timestamp()} {Fore.RED}Warning: Interaction may not have been recorded{Style.RESET_ALL}")
-                else:
-                    print(f"{self.print_timestamp()} {Fore.RED}Failed to report usage{Style.RESET_ALL}")
-                
-                delay = random.uniform(60, 120)
-                print(f"\n{self.print_timestamp()} {Fore.YELLOW}Waiting {delay:.1f} seconds before next query...{Style.RESET_ALL}")
-                time.sleep(delay)
+        print(f"{self.print_timestamp()} {Fore.CYAN}Using Wallet Address: {Fore.MAGENTA}{wallet_address}{Style.RESET_ALL}")
+        print(f"{self.print_timestamp()} {Fore.CYAN}Using Proxy: {Fore.MAGENTA}{proxy}{Style.RESET_ALL}")
+        
+        initial_stats = self.check_stats(wallet_address)
+        initial_interactions = initial_stats.get('total_interactions', 0)
+        
+        response, ttft, total_time = self.send_ai_query(endpoint, question, wallet_address, proxy)
+        
+        print(f"{self.print_timestamp()} {Fore.BLUE}TTFT: {ttft:.2f}ms | Total Time: {total_time:.2f}ms{Style.RESET_ALL}")
+        
+        if self.report_usage(endpoint, question, response, ttft, total_time, wallet_address):
+            print(f"{self.print_timestamp()} {Fore.GREEN}Usage reported successfully{Style.RESET_ALL}")
+            time.sleep(2)
+            final_stats = self.check_stats(wallet_address)
+            final_interactions = final_stats.get('total_interactions', 0)
+            if final_interactions > initial_interactions:
+                print(f"{self.print_timestamp()} {Fore.GREEN}Interaction successfully recorded!{Style.RESET_ALL}")
+                self.daily_points += self.POINTS_PER_INTERACTION
+                self.print_stats(final_stats)
+            else:
+                print(f"{self.print_timestamp()} {Fore.RED}Warning: Interaction may not have been recorded{Style.RESET_ALL}")
+        else:
+            print(f"{self.print_timestamp()} {Fore.RED}Failed to report usage{Style.RESET_ALL}")
 
-        except KeyboardInterrupt:
-            print(f"\n{self.print_timestamp()} {Fore.YELLOW}Script stopped by user{Style.RESET_ALL}")
-        except Exception as e:
-            print(f"\n{self.print_timestamp()} {Fore.RED}An error occurred: {e}{Style.RESET_ALL}")
+    def run(self):
+        while True:
+            print(f"{self.print_timestamp()} {Fore.GREEN}Starting AI interaction script with 24-hour limits (Press Ctrl+C to stop){Style.RESET_ALL}")
+            print(f"{self.print_timestamp()} {Fore.CYAN}Daily Point Limit: {self.MAX_DAILY_POINTS} points ({self.MAX_DAILY_INTERACTIONS} interactions){Style.RESET_ALL}")
+            print(f"{self.print_timestamp()} {Fore.CYAN}First reset will be at: {self.next_reset_time.strftime('%Y-%m-%d %H:%M:%S')}{Style.RESET_ALL}")
+            
+            with ThreadPoolExecutor(max_workers=len(self.wallet_addresses)) as executor:
+                for wallet_index in range(len(self.wallet_addresses)):
+                    wallet_address = self.wallet_addresses[wallet_index]
+                    proxy = self.proxies[wallet_index % len(self.proxies)]
+                    
+                    for _ in range(20):  # 20 iterations per wallet
+                        executor.submit(self.interact_with_ai, wallet_address, proxy)
+
+                executor.shutdown(wait=True)
+
+            print(f"{self.print_timestamp()} {Fore.YELLOW}All wallets have completed their iterations. Waiting for the next cycle...{Style.RESET_ALL}")
+            self.wait_until_next_run()  # Wait until 9 AM WIB
+
+    def wait_until_next_run(self):
+        """Wait until the next run time (9 AM WIB)."""
+        now = datetime.now()
+        next_run_time = now.replace(hour=9, minute=0, second=0, microsecond=0)
+        if now > next_run_time:
+            next_run_time += timedelta(days=1)  # Move to the next day if it's already past 9 AM
+
+        wait_seconds = (next_run_time - now).total_seconds()
+        print(f"{self.print_timestamp()} {Fore.YELLOW}Waiting for {wait_seconds:.0f} seconds until next run at {next_run_time.strftime('%Y-%m-%d %H:%M:%S')} (WIB){Style.RESET_ALL}")
+        time.sleep(wait_seconds)
+
+def read_file_to_list(filename: str) -> List[str]:
+    """Read a file and return a list of non-empty lines."""
+    try:
+        with open(filename, 'r') as file:
+            return [line.strip() for line in file if line.strip()]
+    except FileNotFoundError:
+        print(f"{Fore.RED}Error: {filename} not found.{Style.RESET_ALL}")
+        return []
 
 def main():
     print_banner = """
@@ -385,9 +396,19 @@ def main():
     """
     print(Fore.CYAN + print_banner + Style.RESET_ALL)
     
-    wallet_address = input(f"{Fore.YELLOW}Register first, here: {Fore.GREEN}https://testnet.gokite.ai?r=cmuST6sG{Fore.YELLOW} and Complete Tasks!\n\nNow, input your registered Wallet Address: {Style.RESET_ALL}")
+    # Read wallet addresses from wallet.txt
+    wallet_addresses = read_file_to_list('wallet.txt')
+    if not wallet_addresses:
+        print(f"{Fore.RED}No wallet addresses found. Exiting...{Style.RESET_ALL}")
+        return
     
-    automation = KiteAIAutomation(wallet_address)
+    # Read proxies from proxies.txt
+    proxies = read_file_to_list('proxies.txt')
+    if not proxies:
+        print(f"{Fore.RED}No proxies found. Exiting...{Style.RESET_ALL}")
+        return
+    
+    automation = KiteAIAutomation(wallet_addresses, proxies, max_iterations=20)
     automation.run()
 
 if __name__ == "__main__":
