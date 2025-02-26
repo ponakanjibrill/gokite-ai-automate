@@ -23,6 +23,12 @@ git clone https://github.com/ponakanjibrill/gokite-ai-automate
 ```bash
 cd gokite-ai-automate
 ```
+```bash
+nano wallet.txt
+```
+```bash
+nano proxies.txt
+```
 #### Windows and Termux:
 ```bash
 pip install -r requirements.txt
